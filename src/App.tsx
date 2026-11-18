@@ -1,4 +1,5 @@
 import Grid from "./Grid";
+import Hero from "./Hero";
 
 function App() {
   return (
@@ -22,9 +23,7 @@ function App() {
       </header>
 
       <main id="top">
-        <section className="hero">
-          <h1>kill</h1>
-        </section>
+        <Hero />
 
         <Grid />
       </main>
