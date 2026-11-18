@@ -59,27 +59,31 @@ export default function Grid() {
 
     let travel = 0
     const measure = () => {
-      travel = Math.max(0, strip.scrollWidth - window.innerWidth)
+      travel = Math.max(0, strip.offsetWidth - document.documentElement.clientWidth)
       wrap.style.height = `${strip.offsetHeight + travel}px`
     }
-    let raf = 0
     const update = () => {
-      raf = 0
+      // always use the live size, so a stale measurement can never leave blank space
+      const live = Math.max(0, strip.offsetWidth - document.documentElement.clientWidth)
+      if (live !== travel) measure()
       const top = wrap.getBoundingClientRect().top
       const p = travel === 0 ? 0 : Math.min(1, Math.max(0, (NAV - top) / travel))
       strip.style.transform = `translate3d(${-p * travel}px,0,0)`
     }
-    const onScroll = () => { if (!raf) raf = requestAnimationFrame(update) }
+    const onScroll = () => update()
     const onResize = () => { measure(); update() }
 
     measure()
     update()
+    // the strip's size depends on the window height (svh), so re-measure whenever it changes
+    const ro = new ResizeObserver(onResize)
+    ro.observe(strip)
     window.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('resize', onResize)
     return () => {
+      ro.disconnect()
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onResize)
-      if (raf) cancelAnimationFrame(raf)
     }
   }, [mode])
 

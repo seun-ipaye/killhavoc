@@ -290,55 +290,31 @@ button.tile:focus-visible {
   font-size: 12px;
 }
 
-/* ---------- small screens: stack everything so one scroll shows it all ---------- */
+/* ---------- small screens: two-column masonry, tiles of mixed heights ---------- */
 
 @media (max-width: 899px) {
   .grid-strip {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    display: block;
+    column-count: 2;
+    column-gap: var(--gap);
     width: auto;
     height: auto;
-    gap: var(--gap);
     padding: 0 var(--edge);
     will-change: auto;
   }
 
-  .col {
+  .col,
+  .row {
     display: contents;
   }
 
   .tile {
+    display: flex;
+    width: 100%;
+    break-inside: avoid;
+    margin-bottom: var(--gap);
     aspect-ratio: var(--ar);
     flex-basis: auto;
-  }
-
-  .col-m .tile {
-    grid-column: 1 / -1;
-  }
-}
-
-@media (max-width: 899px) {
-  .row {
-    grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--gap);
-  }
-}
-
-@media (max-width: 560px) {
-  .grid-strip {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .tile {
-    aspect-ratio: auto;
-    min-height: 320px;
-  }
-
-  .row .tile {
-    aspect-ratio: var(--ar);
-    min-height: 0;
   }
 }
 

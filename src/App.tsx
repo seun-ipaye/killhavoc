@@ -1,4 +1,4 @@
-import Grid from './Grid'
+import Grid from "./Grid";
 
 function App() {
   return (
@@ -13,7 +13,9 @@ function App() {
       </div>
 
       <header className="nav">
-        <a className="nav-name" href="#top">killhavoc</a>
+        <a className="nav-name" href="#top">
+          killhavoc
+        </a>
         <a className="nav-brand" href="#top" aria-label="killhavoc">
           <img src="/favicon3.png" alt="" />
         </a>
@@ -28,12 +30,19 @@ function App() {
       </main>
 
       <footer className="footer">
-        <a href="https://seun.ink" target="_blank" rel="noopener noreferrer">dev</a>
-        <a href="https://instagram.com/killhav0c" target="_blank" rel="noopener noreferrer">instagram</a>
-        <a href="https://github.com/seun-ipaye" target="_blank" rel="noopener noreferrer">github</a>
+        <a href="https://seun.ink" target="_blank" rel="noopener noreferrer">
+          dev
+        </a>
+        <a
+          href="https://instagram.com/killhav0c"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          instagram
+        </a>
       </footer>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
