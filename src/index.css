@@ -1,33 +1,67 @@
-html,
-body,
-#root {
-  margin: 0;
-  height: 100%;
-  background: #000;
+:root {
+  --nav: 96px; /* keep in sync with NAV in Grid.tsx */
+  --edge: 24px;
+  --gap: 16px;
+  --mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --red: #c1121f;
+  color-scheme: dark;
 }
 
-.screen {
-  width: 100%;
-  height: 100%;
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  margin: 0;
+  background: #000;
+  color: #fff;
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ---------- intro: tiger + loading bar, then everything fades to black ---------- */
+
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
   background: #000;
   display: flex;
   align-items: center;
   justify-content: center;
+  pointer-events: none;
+  /* 1) content fades to black (5s–6.5s), 2) then the black fades to the site (6.5s–8s) */
+  animation: intro-out 1.5s ease-in 6.5s forwards;
 }
 
-.content {
+.intro-content {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 20px;
-  /* hold for the 5s load, then fade everything out over 1.5s */
-  animation: fade-out 1.5s ease-in 5s forwards;
+  animation: content-out 1.5s ease-in 5s forwards;
 }
 
-.tiger {
+@keyframes content-out {
+  to {
+    opacity: 0;
+  }
+}
+
+.intro-tiger {
   width: 116px;
   height: auto;
-  object-fit: contain;
 }
 
 .loader {
@@ -52,8 +86,226 @@ body,
   }
 }
 
-@keyframes fade-out {
+@keyframes intro-out {
   to {
     opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* ---------- nav ---------- */
+
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--nav);
+  z-index: 50;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 0 var(--edge);
+  background: linear-gradient(#000 40%, transparent);
+}
+
+.nav-name {
+  grid-column: 1;
+  justify-self: start;
+  font-size: 16px;
+}
+
+.nav-brand {
+  grid-column: 2;
+  display: flex;
+}
+
+.nav-brand img {
+  width: 64px;
+  height: 64px;
+}
+
+
+
+
+/* ---------- hero: fills the screen ---------- */
+
+.hero {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--nav) var(--edge) 0;
+  position: relative;
+}
+
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(40px, 9vw, 112px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-weight: 700;
+}
+
+
+
+
+
+
+
+
+.footer {
+  display: flex;
+  gap: 24px;
+  padding: 48px var(--edge) 48px;
+  opacity: 0.6;
+}
+
+/* ---------- grid ---------- */
+
+.grid-wrap {
+  position: relative;
+}
+
+.grid-scroller {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: var(--edge);
+  scrollbar-width: thin;
+}
+
+/* tall window: pinned under the nav, scroll position drives the sideways motion */
+.grid-scroller[data-mode='pinned'] {
+  position: sticky;
+  top: var(--nav);
+  overflow: clip;
+  scroll-snap-type: none;
+}
+
+.grid-strip {
+  display: flex;
+  width: max-content;
+  gap: var(--gap);
+  padding: 24px var(--edge);
+  /* fills the window when pinned, never shorter than 640px */
+  --h: max(640px, calc(100svh - var(--nav) - 48px));
+  height: calc(var(--h) + 48px);
+  will-change: transform;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  height: var(--h);
+  flex: none;
+  scroll-snap-align: start;
+}
+
+.col-n {
+  width: calc(var(--h) * 0.62);
+}
+
+.col-w {
+  width: calc(var(--h) * 1.25);
+}
+
+.tile {
+  all: unset;
+  box-sizing: border-box;
+  position: relative;
+  flex-basis: 0;
+  min-height: 0;
+  border-radius: 20px;
+  overflow: clip;
+  display: flex;
+  align-items: flex-end;
+  padding: 20px;
+  color: #fff;
+}
+
+a.tile,
+button.tile {
+  cursor: pointer;
+  transition: transform 0.25s ease;
+}
+
+a.tile:hover,
+button.tile:hover {
+  transform: scale(0.985);
+}
+
+a.tile:focus-visible,
+button.tile:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+.tile-light {
+  color: #111;
+}
+
+
+
+
+.tile-arrow {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.9);
+  color: #000;
+  font-size: 14px;
+}
+
+/* ---------- small screens: stack everything so one scroll shows it all ---------- */
+
+@media (max-width: 899px) {
+  .grid-strip {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: auto;
+    height: auto;
+    gap: var(--gap);
+    padding: 0 var(--edge);
+    will-change: auto;
+  }
+
+  .col {
+    display: contents;
+  }
+
+  .tile {
+    aspect-ratio: var(--ar);
+    flex-basis: auto;
+  }
+
+  .col-w .tile {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 560px) {
+  .grid-strip {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tile {
+    aspect-ratio: auto;
+    min-height: 320px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
 }
