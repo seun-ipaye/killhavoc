@@ -1,16 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
-import { columns, type Tile } from './tiles'
+import { columns, isRow, type Tile } from './tiles'
 
 const NAV = 96 // px, keep in sync with --nav in index.css
 const STACK_BELOW = 900 // px, below this width the grid stacks vertically
 
 type Mode = 'pinned' | 'scroll' | 'stack'
 
-function TileView({ tile }: { tile: Tile }) {
+function TileView({ tile, ar }: { tile: Tile; ar?: number }) {
   const style = {
     background: tile.color,
-    flexGrow: tile.flex,
-    '--ar': tile.ar,
+    flexGrow: ar === undefined ? tile.flex : 1,
+    '--ar': ar ?? tile.ar,
   } as React.CSSProperties
   const className = `tile${tile.light ? ' tile-light' : ''}`
   const body = (
@@ -89,9 +89,17 @@ export default function Grid() {
         <div className="grid-strip" ref={stripRef}>
           {columns.map((col, i) => (
             <div className={`col col-${col.size}`} key={i}>
-              {col.tiles.map((t, j) => (
-                <TileView tile={t} key={j} />
-              ))}
+              {col.items.map((item, j) =>
+                isRow(item) ? (
+                  <div className="row" style={{ flexGrow: item.flex }} key={j}>
+                    {item.row.map((t, k) => (
+                      <TileView tile={t} ar={item.ar} key={k} />
+                    ))}
+                  </div>
+                ) : (
+                  <TileView tile={item} key={j} />
+                ),
+              )}
             </div>
           ))}
         </div>
