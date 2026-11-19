@@ -30,11 +30,22 @@ export default function Hero() {
 
   useEffect(() => {
     let timer = 0
-    const start = window.setTimeout(() => {
+    let start = 0
+    let cancelled = false
+    // download every font up front (during the intro) so a swap never waits on the network
+    const loaded = Promise.all(
+      fonts.map((f) => document.fonts.load(`${f.weight} 100px ${f.family}`, f.text)),
+    ).catch(() => undefined)
+    const wait = new Promise((r) => {
+      start = window.setTimeout(r, INTRO_MS)
+    })
+    Promise.all([loaded, wait]).then(() => {
+      if (cancelled) return
       setI(1)
       timer = window.setInterval(() => setI((n) => (n + 1) % fonts.length), STEP_MS)
-    }, INTRO_MS)
+    })
     return () => {
+      cancelled = true
       window.clearTimeout(start)
       window.clearInterval(timer)
     }
@@ -49,6 +60,11 @@ export default function Hero() {
           fontWeight: f.weight,
           letterSpacing: f.spacing ?? '0',
           fontSize: `calc(clamp(40px, 9vw, 112px) * ${f.scale})`,
+          // fixed box so the page doesn't reflow between faces
+          height: 'calc(clamp(40px, 9vw, 112px) * 1.6)',
+          display: 'flex',
+          alignItems: 'center',
+          whiteSpace: 'nowrap',
         }}
       >
         {f.text}

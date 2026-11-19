@@ -32,6 +32,35 @@ export const isRow = (i: Item): i is Row => 'row' in i
 
 // 20 tiles. No tile is the full height of the strip; only two columns hold a
 // side-by-side pair of small tiles.
+/** mobile: a section is either two columns of tiles (flex = relative height) or one full-width tile */
+export type MobileSection =
+  | { kind: 'cols'; left: Tile[]; right: Tile[]; ar: number }
+  | { kind: 'full'; tile: Tile; ar: number }
+
+const t = (flex: number, color: string, light = false, kind: TileKind = 'link'): Tile => ({
+  flex, ar: 1, color, light: light || undefined, kind, href: kind === 'link' ? '#' : undefined,
+})
+
+export const mobileSections: MobileSection[] = [
+  { kind: 'cols', ar: 1 / 1.5,
+    left: [t(1.2, '#c1121f'), t(0.8, '#e9e9e9', true, 'static'), t(1, '#264653')],
+    right: [t(0.8, '#3d405b'), t(1.3, '#ffb4a2', true), t(0.9, '#2a2a2a')] },
+  { kind: 'full', ar: 1, tile: t(1, '#e07a5f') },
+  { kind: 'cols', ar: 1 / 1.1,
+    left: [t(1, '#81b29a', true), t(1.3, '#111111')],
+    right: [t(1.4, '#6d6875'), t(0.9, '#c1121f', false, 'static'), t(0.7, '#1d3557')] },
+  { kind: 'full', ar: 2.3, tile: t(1, '#b5838d') },
+  { kind: 'full', ar: 1.5, tile: t(1, '#f2cc8f', true) },
+  { kind: 'cols', ar: 1 / 1.35,
+    left: [t(0.7, '#e07a5f'), t(1.1, '#264653'), t(0.8, '#ffb4a2', true), t(0.9, '#3d405b')],
+    right: [t(1.3, '#e9e9e9', true), t(1, '#81b29a', true), t(1.1, '#c1121f')] },
+  { kind: 'full', ar: 1.2, tile: t(1, '#1d3557') },
+  { kind: 'cols', ar: 1 / 1.7,
+    left: [t(1.2, '#6d6875'), t(0.8, '#e07a5f'), t(1.3, '#111111')],
+    right: [t(0.8, '#f2cc8f', true), t(1.2, '#264653'), t(0.8, '#b5838d'), t(0.8, '#2a2a2a')] },
+  { kind: 'full', ar: 2, tile: t(1, '#c1121f') },
+]
+
 export const columns: Column[] = [
   { size: 'w', items: [
     { flex: 0.8, ar: 1.1, color: '#c1121f', kind: 'link', href: '#' },

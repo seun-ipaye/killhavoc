@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { columns, isRow, type Tile } from './tiles'
+import { columns, isRow, mobileSections, type Tile } from './tiles'
 
 const NAV = 96 // px, keep in sync with --nav in index.css
 const STACK_BELOW = 900 // px, below this width the grid stacks vertically
@@ -107,6 +107,25 @@ export default function Grid() {
             </div>
           ))}
         </div>
+      </div>
+
+      <div className="m-grid">
+        {mobileSections.map((s, i) =>
+          s.kind === 'cols' ? (
+            <div className="m-block" style={{ aspectRatio: s.ar }} key={i}>
+              <div className="m-col">
+                {s.left.map((t, j) => <TileView tile={t} key={j} />)}
+              </div>
+              <div className="m-col">
+                {s.right.map((t, j) => <TileView tile={t} key={j} />)}
+              </div>
+            </div>
+          ) : (
+            <div className="m-full" style={{ '--ar': s.ar } as React.CSSProperties} key={i}>
+              <TileView tile={s.tile} />
+            </div>
+          ),
+        )}
       </div>
     </div>
   )

@@ -207,15 +207,20 @@ a {
 }
 
 .col-n {
-  width: calc(var(--h) * 0.42);
+  width: calc(var(--h) * 0.39);
 }
 
 .col-m {
-  width: calc(var(--h) * 0.52);
+  width: calc(var(--h) * 0.42);
 }
 
 .col-w {
-  width: calc(var(--h) * 0.62);
+  width: calc(var(--h) * 0.5);
+}
+
+/* mobile layout is rendered separately; hidden on desktop */
+.m-grid {
+  display: none;
 }
 
 .row {
@@ -293,28 +298,40 @@ button.tile:focus-visible {
 /* ---------- small screens: two-column masonry, tiles of mixed heights ---------- */
 
 @media (max-width: 899px) {
-  .grid-strip {
-    display: block;
-    column-count: 2;
-    column-gap: var(--gap);
-    width: auto;
-    height: auto;
-    padding: 0 var(--edge);
-    will-change: auto;
+  .grid-scroller {
+    display: none;
   }
 
-  .col,
-  .row {
-    display: contents;
-  }
-
-  .tile {
+  .m-grid {
     display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+    padding: 0 var(--edge);
+  }
+
+  /* two columns of three boxes with different heights that add up to the same total */
+  .m-block {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap);
+  }
+
+  .m-col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+    min-height: 0;
+  }
+
+  .m-full {
     width: 100%;
-    break-inside: avoid;
-    margin-bottom: var(--gap);
     aspect-ratio: var(--ar);
-    flex-basis: auto;
+    flex: none;
+  }
+
+  .m-full .tile {
+    width: 100%;
+    height: 100%;
   }
 }
 
