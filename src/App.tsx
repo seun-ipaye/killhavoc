@@ -26,6 +26,8 @@ function App() {
         <Hero />
 
         <Grid />
+
+        <Hero word="havoc" />
       </main>
 
       <footer className="footer">

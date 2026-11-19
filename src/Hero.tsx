@@ -25,8 +25,9 @@ const fonts: HeroFont[] = [
 const INTRO_MS = 8000 // the intro overlay is gone by then
 const STEP_MS = 2000
 
-export default function Hero() {
+export default function Hero({ word = 'kill' }: { word?: string }) {
   const [i, setI] = useState(0)
+  const label = (x: HeroFont) => (x.text === 'kill' ? word : word.toUpperCase())
 
   useEffect(() => {
     let timer = 0
@@ -34,7 +35,7 @@ export default function Hero() {
     let cancelled = false
     // download every font up front (during the intro) so a swap never waits on the network
     const loaded = Promise.all(
-      fonts.map((f) => document.fonts.load(`${f.weight} 100px ${f.family}`, f.text)),
+      fonts.map((f) => document.fonts.load(`${f.weight} 100px ${f.family}`, label(f))),
     ).catch(() => undefined)
     const wait = new Promise((r) => {
       start = window.setTimeout(r, INTRO_MS)
@@ -67,7 +68,7 @@ export default function Hero() {
           whiteSpace: 'nowrap',
         }}
       >
-        {f.text}
+        {label(f)}
       </h1>
     </section>
   )
