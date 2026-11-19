@@ -41,8 +41,8 @@ a {
   align-items: center;
   justify-content: center;
   pointer-events: none;
-  /* 1) content fades to black (5s–6.5s), 2) then the black fades to the site (6.5s–8s) */
-  animation: intro-out 1.5s ease-in 6.5s forwards;
+  /* 1) content fades to black (3.5s–4.5s), 2) then the black fades to the site (4.5s–5.5s) */
+  animation: intro-out 1s ease-in 4.5s forwards;
 }
 
 .intro-content {
@@ -50,7 +50,7 @@ a {
   flex-direction: column;
   align-items: center;
   gap: 20px;
-  animation: content-out 1.5s ease-in 5s forwards;
+  animation: content-out 1s ease-in 3.5s forwards;
 }
 
 @keyframes content-out {
@@ -77,7 +77,7 @@ a {
   background: #fff;
   transform-origin: left;
   transform: scaleX(0);
-  animation: load 5s linear forwards;
+  animation: load 3.5s linear forwards;
 }
 
 @keyframes load {

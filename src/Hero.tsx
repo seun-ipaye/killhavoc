@@ -22,7 +22,7 @@ const fonts: HeroFont[] = [
   { family: "'Bodoni Moda', serif", weight: 900, text: 'KILL', scale: 1.1 },
 ]
 
-const INTRO_MS = 8000 // the intro overlay is gone by then
+const INTRO_MS = 5500 // the intro overlay is gone by then
 const STEP_MS = 2000
 
 export default function Hero({ word = 'kill' }: { word?: string }) {
@@ -34,9 +34,12 @@ export default function Hero({ word = 'kill' }: { word?: string }) {
     let start = 0
     let cancelled = false
     // download every font up front (during the intro) so a swap never waits on the network
-    const loaded = Promise.all(
-      fonts.map((f) => document.fonts.load(`${f.weight} 100px ${f.family}`, label(f))),
-    ).catch(() => undefined)
+    // (var(--mono) is not a loadable face, and one rejection must not skip waiting for the rest)
+    const loaded = Promise.allSettled(
+      fonts
+        .filter((f) => !f.family.startsWith('var('))
+        .map((f) => document.fonts.load(`${f.weight} 100px ${f.family}`, label(f))),
+    )
     const wait = new Promise((r) => {
       start = window.setTimeout(r, INTRO_MS)
     })

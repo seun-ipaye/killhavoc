@@ -50,15 +50,10 @@ export const mobileSections: MobileSection[] = [
     left: [t(1, '#81b29a', true), t(1.3, '#111111')],
     right: [t(1.4, '#6d6875'), t(0.9, '#c1121f', false, 'static'), t(0.7, '#1d3557')] },
   { kind: 'full', ar: 2.3, tile: t(1, '#b5838d') },
-  { kind: 'full', ar: 1.5, tile: t(1, '#f2cc8f', true) },
-  { kind: 'cols', ar: 1 / 1.35,
-    left: [t(0.7, '#e07a5f'), t(1.1, '#264653'), t(0.8, '#ffb4a2', true), t(0.9, '#3d405b')],
-    right: [t(1.3, '#e9e9e9', true), t(1, '#81b29a', true), t(1.1, '#c1121f')] },
-  { kind: 'full', ar: 1.2, tile: t(1, '#1d3557') },
-  { kind: 'cols', ar: 1 / 1.7,
+  { kind: 'cols', ar: 1 / 1.6,
     left: [t(1.2, '#6d6875'), t(0.8, '#e07a5f'), t(1.3, '#111111')],
-    right: [t(0.8, '#f2cc8f', true), t(1.2, '#264653'), t(0.8, '#b5838d'), t(0.8, '#2a2a2a')] },
-  { kind: 'full', ar: 2, tile: t(1, '#c1121f') },
+    right: [t(0.8, '#f2cc8f', true), t(1.4, '#264653'), t(1, '#b5838d')] },
+  { kind: 'full', ar: 1.4, tile: t(1, '#c1121f') },
 ]
 
 export const columns: Column[] = [
