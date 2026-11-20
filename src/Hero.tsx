@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useSyncExternalStore } from 'react'
 
 interface HeroFont {
   family: string
@@ -22,42 +22,58 @@ const fonts: HeroFont[] = [
   { family: "'Bodoni Moda', serif", weight: 900, text: 'KILL', scale: 1.1 },
 ]
 
+// one shared index so "kill" and "havoc" always show the same face
+let index = 0
+const listeners = new Set<() => void>()
+const subscribe = (cb: () => void) => {
+  listeners.add(cb)
+  return () => void listeners.delete(cb)
+}
+const next = () => {
+  index = (index + 1) % fonts.length
+  listeners.forEach((cb) => cb())
+}
+
 const INTRO_MS = 5500 // the intro overlay is gone by then
 const STEP_MS = 2000
+let timer = 0
+// (re)start the shared 2s loop, so a click gets a full 2s before the next automatic change
+const restart = () => {
+  window.clearInterval(timer)
+  timer = window.setInterval(next, STEP_MS)
+}
+const click = () => {
+  next()
+  restart()
+}
 
 export default function Hero({ word = 'kill' }: { word?: string }) {
-  const [i, setI] = useState(0)
+  const i = useSyncExternalStore(subscribe, () => index)
   const label = (x: HeroFont) => (x.text === 'kill' ? word : word.toUpperCase())
 
+  // download every font up front (during the intro) so a swap never waits on the network
+  // (var(--mono) is not a loadable face, and one rejection must not skip waiting for the rest)
   useEffect(() => {
-    let timer = 0
-    let start = 0
-    let cancelled = false
-    // download every font up front (during the intro) so a swap never waits on the network
-    // (var(--mono) is not a loadable face, and one rejection must not skip waiting for the rest)
-    const loaded = Promise.allSettled(
-      fonts
-        .filter((f) => !f.family.startsWith('var('))
-        .map((f) => document.fonts.load(`${f.weight} 100px ${f.family}`, label(f))),
-    )
-    const wait = new Promise((r) => {
-      start = window.setTimeout(r, INTRO_MS)
-    })
-    Promise.all([loaded, wait]).then(() => {
-      if (cancelled) return
-      setI(1)
-      timer = window.setInterval(() => setI((n) => (n + 1) % fonts.length), STEP_MS)
-    })
+    fonts
+      .filter((f) => !f.family.startsWith('var('))
+      .forEach((f) => document.fonts.load(`${f.weight} 100px ${f.family}`, label(f)).catch(() => {}))
+
+    // both words share one timer, started once the intro is over
+    const start = window.setTimeout(() => {
+      if (!timer) restart()
+    }, INTRO_MS)
     return () => {
-      cancelled = true
       window.clearTimeout(start)
-      window.clearInterval(timer)
+      if (listeners.size === 0) {
+        window.clearInterval(timer)
+        timer = 0
+      }
     }
   }, [])
 
   const f = fonts[i]
   return (
-    <section className="hero">
+    <section className="hero" onClick={click}>
       <h1
         style={{
           fontFamily: f.family,

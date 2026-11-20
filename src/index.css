@@ -142,6 +142,12 @@ a {
 }
 
 
+.hero {
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
 .hero h1 {
   margin: 0;
   font-size: clamp(40px, 9vw, 112px);
