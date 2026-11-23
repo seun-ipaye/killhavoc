@@ -8,21 +8,16 @@ type Mode = 'pinned' | 'scroll' | 'stack'
 
 function TileView({ tile, ar }: { tile: Tile; ar?: number }) {
   const style = {
-    background: tile.color,
+    background: tile.src ? `${tile.color} url(${tile.src}) center / ${tile.contain ? 'contain' : 'cover'} no-repeat` : tile.color,
     flexGrow: ar === undefined ? tile.flex : 1,
     '--ar': ar ?? tile.ar,
   } as React.CSSProperties
   const className = `tile${tile.light ? ' tile-light' : ''}`
-  const body = (
-    <>
-      {tile.kind !== 'static' && <span className="tile-arrow">↗</span>}
-    </>
-  )
   if (tile.kind === 'link')
-    return <a className={className} style={style} href={tile.href}>{body}</a>
+    return <a className={className} style={style} href={tile.href}></a>
   if (tile.kind === 'button')
-    return <button className={className} style={style} type="button">{body}</button>
-  return <div className={className} style={style}>{body}</div>
+    return <button className={className} style={style} type="button"></button>
+  return <div className={className} style={style}></div>
 }
 
 export default function Grid() {

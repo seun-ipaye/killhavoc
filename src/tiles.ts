@@ -10,6 +10,10 @@ export interface Tile {
   light?: boolean
   kind: TileKind
   href?: string
+  /** design image, shown cover-fit */
+  src?: string
+  /** show the whole image (letterboxed) instead of cropping to fill */
+  contain?: boolean
 }
 
 /** two or more small tiles sitting side by side inside a column */
@@ -37,62 +41,64 @@ export type MobileSection =
   | { kind: 'cols'; left: Tile[]; right: Tile[]; ar: number }
   | { kind: 'full'; tile: Tile; ar: number }
 
-const t = (flex: number, color: string, light = false, kind: TileKind = 'link'): Tile => ({
-  flex, ar: 1, color, light: light || undefined, kind, href: kind === 'link' ? '#' : undefined,
+const t = (flex: number, color: string, light = false, kind: TileKind = 'static', src?: string): Tile => ({
+  flex, ar: 1, color, light: light || undefined, kind, href: kind === 'link' ? '#' : undefined, src,
 })
+
+// design image tile (cover-fit on black)
+const D = (name: string) => `/designs/${name}`
+const img = (flex: number, ar: number, name: string): Tile =>
+  ({ flex, ar, color: '#000', kind: 'static', src: D(name) })
+// the lego image has a white background, so it can be shown whole without visible bars
+const whole = (tile: Tile): Tile => ({ ...tile, color: '#fff', contain: true })
+const mi = (flex: number, name: string) => t(flex, '#000', false, 'static', D(name))
 
 export const mobileSections: MobileSection[] = [
   { kind: 'cols', ar: 1 / 1.5,
-    left: [t(1.2, '#c1121f'), t(0.8, '#e9e9e9', true, 'static'), t(1, '#264653')],
-    right: [t(0.8, '#3d405b'), t(1.3, '#ffb4a2', true), t(0.9, '#2a2a2a')] },
-  { kind: 'full', ar: 1, tile: t(1, '#e07a5f') },
+    left: [mi(1.2, 'society.png'), mi(0.8, 'cleopatra.png'), whole(mi(1, 'lego.jpg'))],
+    right: [mi(0.8, 'dark-sonic.jpg'), mi(1.3, 'sons-of-caesar.png'), mi(0.9, 'balcony-window.gif')] },
+  { kind: 'full', ar: 1, tile: mi(1, 'spotify.jpg') },
   { kind: 'cols', ar: 1 / 1.1,
-    left: [t(1, '#81b29a', true), t(1.3, '#111111')],
-    right: [t(1.4, '#6d6875'), t(0.9, '#c1121f', false, 'static'), t(0.7, '#1d3557')] },
-  { kind: 'full', ar: 2.3, tile: t(1, '#b5838d') },
+    left: [mi(1, 'pixel-balcony.jpg'), mi(1.3, 'blue-lock.jpg')],
+    right: [mi(1.4, 'castle.jpg'), mi(0.9, 'boxer.gif'), mi(0.7, 'sword.gif')] },
+  { kind: 'full', ar: 2.3, tile: mi(1, 'underpass.gif') },
   { kind: 'cols', ar: 1 / 1.6,
-    left: [t(1.2, '#6d6875'), t(0.8, '#e07a5f'), t(1.3, '#111111')],
-    right: [t(0.8, '#f2cc8f', true), t(1.4, '#264653'), t(1, '#b5838d')] },
-  { kind: 'full', ar: 1.4, tile: t(1, '#c1121f') },
+    left: [mi(1.2, 'bright-young-women.jpg'), mi(0.8, 'gif-interview.gif'), mi(1.3, 'i-love-you.jpg')],
+    right: [mi(0.8, 'yusuke.jpg'), mi(1.4, 'shadow.jpg'), mi(1, 'red-silhouette.gif')] },
+  { kind: 'full', ar: 1.4, tile: mi(1, 'dvd-video.jpg') },
 ]
 
 export const columns: Column[] = [
   { size: 'w', items: [
-    { flex: 0.8, ar: 1.1, color: '#c1121f', kind: 'link', href: '#' },
-    { flex: 1.3, ar: 0.75, color: '#e9e9e9', light: true, kind: 'static' },
-    { flex: 0.7, ar: 1.3, color: '#264653', kind: 'link', href: '#' },
+    img(0.8, 1.1, 'underpass.gif'),
+    img(1.3, 0.75, 'shadow.jpg'),
+    img(0.7, 1.3, 'yusuke.jpg'),
   ] },
   { size: 'm', items: [
-    { flex: 1.1, ar: 0.8, color: '#3d405b', kind: 'link', href: '#' },
-    { flex: 0.9, ar: 1, color: '#ffb4a2', light: true, kind: 'link', href: '#' },
+    img(1.1, 0.8, 'castle.jpg'),
+    img(0.9, 1, 'balcony-window.gif'),
   ] },
   { size: 'n', items: [
-    { row: [
-      { flex: 1, ar: 0.9, color: '#e07a5f', kind: 'link', href: '#' },
-      { flex: 1, ar: 0.9, color: '#81b29a', light: true, kind: 'link', href: '#' },
-    ], flex: 0.55, ar: 0.9 },
-    { flex: 1.2, ar: 0.7, color: '#2a2a2a', kind: 'link', href: '#' },
-    { flex: 0.8, ar: 1.2, color: '#c1121f', kind: 'static' },
+    { row: [img(1, 0.9, 'dvd-video.jpg'), img(1, 0.9, 'sons-of-caesar.png')], flex: 0.55, ar: 0.9 },
+    img(1.2, 0.7, 'pixel-balcony.jpg'),
+    img(0.8, 1.2, 'spotify.jpg'),
   ] },
   { size: 'm', items: [
-    { flex: 0.8, ar: 1.4, color: '#b5838d', kind: 'link', href: '#' },
-    { flex: 1.2, ar: 0.85, color: '#111111', kind: 'link', href: '#' },
+    img(0.8, 1.4, 'red-silhouette.gif'),
+    img(1.2, 0.85, 'bright-young-women.jpg'),
   ] },
   { size: 'n', items: [
-    { flex: 1.1, ar: 0.8, color: '#f2cc8f', light: true, kind: 'link', href: '#' },
-    { flex: 0.9, ar: 1, color: '#6d6875', kind: 'button' },
-    { flex: 0.7, ar: 1.3, color: '#1d3557', kind: 'static' },
+    img(1.1, 0.8, 'gif-interview.gif'),
+    whole(img(0.9, 1, 'lego.jpg')),
+    img(0.7, 1.3, 'dark-sonic.jpg'),
   ] },
   { size: 'n', items: [
-    { flex: 1, ar: 0.75, color: '#81b29a', light: true, kind: 'link', href: '#' },
-    { row: [
-      { flex: 1, ar: 0.9, color: '#264653', kind: 'button' },
-      { flex: 1, ar: 0.9, color: '#e9e9e9', light: true, kind: 'link', href: '#' },
-    ], flex: 0.5, ar: 0.9 },
-    { flex: 0.9, ar: 0.9, color: '#e07a5f', kind: 'link', href: '#' },
+    img(1, 0.75, 'society.png'),
+    { row: [img(1, 0.9, 'cleopatra.png'), img(1, 0.9, 'i-love-you.jpg')], flex: 0.5, ar: 0.9 },
+    img(0.9, 0.9, 'boxer.gif'),
   ] },
   { size: 'm', items: [
-    { flex: 1.3, ar: 0.8, color: '#f2cc8f', light: true, kind: 'link', href: '#' },
-    { flex: 0.7, ar: 1.2, color: '#c1121f', kind: 'link', href: '#' },
+    img(1.3, 0.8, 'blue-lock.jpg'),
+    img(0.7, 1.2, 'sword.gif'),
   ] },
 ]
