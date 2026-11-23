@@ -1,5 +1,6 @@
 import Grid from "./Grid";
 import Hero from "./Hero";
+import MusicButton from "./MusicButton";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <a className="nav-brand" href="#top" aria-label="killhavoc">
           <img src="/favicon3.png" alt="" />
         </a>
+        <MusicButton />
       </header>
 
       <main id="top">

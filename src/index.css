@@ -120,6 +120,37 @@ a {
   display: flex;
 }
 
+.nav-music {
+  grid-column: 3;
+  justify-self: end;
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 8px;
+  margin-right: -8px;
+  color: #fff;
+  opacity: 0.6;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: opacity 0.2s ease;
+}
+
+.nav-music:hover,
+.nav-music.is-playing {
+  opacity: 1;
+}
+
+.nav-music.is-playing svg {
+  animation: music-pulse 0.9s ease-in-out infinite alternate;
+}
+
+@keyframes music-pulse {
+  to {
+    transform: scale(1.18);
+  }
+}
+
 .nav-brand img {
   width: 64px;
   height: 64px;
